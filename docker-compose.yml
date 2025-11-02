@@ -1,0 +1,10 @@
+services:
+  jekyll:
+    image: jekyll/jekyll:4.2.0
+    command: jekyll serve --watch --force_polling --incremental --host 0.0.0.0
+    ports:
+      - "4000:4000"
+    volumes:
+      - .:/srv/jekyll:cached
+    environment:
+      - JEKYLL_ENV=development
