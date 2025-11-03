@@ -1,17 +1,16 @@
-<!-- _includes/nav.html -->
 <nav class="navbar navbar-expand-lg navbar-dark py-3">
     <div class="container">
-        <a class="navbar-brand fw-bold text-warning" href="/">LGI</a>
+        <a class="navbar-brand fw-bold text-warning" href="{{ relative_url }}">LGI</a>
         <button class="navbar-toggler border-warning" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
-                    <a class="nav-link text-light px-3 {% if page.url == '/' or page.url == '/index.html' %}active text-warning{% endif %}" href="/">Home</a>
+                    <a class="nav-link text-light px-3 {% if page.url == '/' or page.url == '/index.html' %}active text-warning{% endif %}" href="{{ relative_url }}">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-light px-3 {% if page.url contains '/join' %}active text-warning{% endif %}" href="/join.html">Join</a>
+                    <a class="nav-link text-light px-3 {% if page.url contains '/join' %}active text-warning{% endif %}" href="{{ 'join.html' | relative_url }}">Join</a>
                 </li>
             </ul>
         </div>
