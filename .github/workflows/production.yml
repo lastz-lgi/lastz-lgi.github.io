@@ -1,15 +1,18 @@
-# .github/workflows/deploy.yml
-name: Build & Deploy
+name: Deploy Production
 
 on:
   push:
     branches: [ main ]
 
+permissions:
+  contents: write
+
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Build Jekyll site
         run: |
@@ -21,6 +24,9 @@ jobs:
             jekyll/builder:4 \
             jekyll build
 
+      - name: Add .nojekyll
+        run: touch _site/.nojekyll
+
       - name: Deploy to gh-pages
         uses: peaceiris/actions-gh-pages@v3
         with:
@@ -28,5 +34,6 @@ jobs:
           publish_branch: gh-pages
           publish_dir: _site
           destination_dir: lgi
-          clean_exclude: lgi/pr-preview/
+          clean_exclude: |
+            lgi/pr-preview/
           keep_files: true
