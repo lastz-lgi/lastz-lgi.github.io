@@ -1,3 +1,4 @@
+# .github/workflows/production.yml
 name: Deploy Production
 
 on:
@@ -24,7 +25,7 @@ jobs:
             jekyll/builder:4 \
             jekyll build
 
-      - name: Add .nojekyll
+      - name: Add .nojekyll to _site
         run: touch _site/.nojekyll
 
       - name: Deploy to gh-pages
@@ -33,7 +34,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: gh-pages
           publish_dir: _site
-          destination_dir: lgi
-          clean_exclude: |
+          destination_dir: .
+          exclude_assets: |
             lgi/pr-preview/
           keep_files: true

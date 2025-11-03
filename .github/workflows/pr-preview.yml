@@ -1,27 +1,19 @@
-name: PR Preview
+# .github/workflows/production.yml
+name: Deploy Production
 
 on:
-  pull_request:
+  push:
     branches: [ main ]
-    types: [ opened, synchronize, reopened, closed ]
 
 permissions:
   contents: write
-  pull-requests: write
-
-concurrency:
-  group: pr-${{ github.event.pull_request.number }}
-  cancel-in-progress: true
 
 jobs:
-  preview:
-    if: github.event.action != 'closed'
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Build Jekyll site
         run: |
@@ -31,27 +23,14 @@ jobs:
             --env JEKYLL_UID="$(id -u)" \
             --env JEKYLL_GID="$(id -g)" \
             jekyll/builder:4 \
-            jekyll build --baseurl "/lgi/pr-preview/pr-${{ github.event.pull_request.number }}"
+            jekyll build
 
-      - name: Deploy PR Preview
+      - name: Deploy Production
         uses: rossjrw/pr-preview-action@v1
         with:
           source-dir: _site
           token: ${{ secrets.GITHUB_TOKEN }}
           preview-branch: gh-pages
-          umbrella-dir: lgi/pr-preview
-          comment: true
-
-  cleanup:
-    if: github.event.action == 'closed'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Remove PR Preview
-        uses: rossjrw/pr-preview-action@v1
-        with:
-          source-dir: _site
-          token: ${{ secrets.GITHUB_TOKEN }}
-          preview-branch: gh-pages
-          umbrella-dir: lgi/pr-preview
+          umbrella-dir: lgi
           comment: false
-          action: remove
+          keep-files: true
