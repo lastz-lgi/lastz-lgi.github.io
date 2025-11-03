@@ -1,3 +1,3 @@
 # LastZ-LGI
 
-Main website for LGI alliance. 
+Main website for LGI alliance
