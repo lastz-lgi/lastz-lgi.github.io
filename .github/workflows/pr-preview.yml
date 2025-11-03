@@ -1,0 +1,47 @@
+name: PR Preview
+
+on:
+  pull_request:
+    branches: [ main ]
+    types: [ opened, synchronize, reopened ]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pr-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Build Jekyll site
+        run: |
+          docker run --rm \
+            --volume="${GITHUB_WORKSPACE}:/srv/jekyll" \
+            --env JEKYLL_ENV=production \
+            --env JEKYLL_UID="$(id -u)" \
+            --env JEKYLL_GID="$(id -g)" \
+            jekyll/builder:4 \
+            jekyll build
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/deploy-pages@v4
+        id: deployment
